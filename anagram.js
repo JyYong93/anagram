@@ -1,37 +1,45 @@
-// https://stackoverflow.com/questions/909449/anagrams-finder-in-javascript
+// https://en.wikipedia.org/wiki/Heap's_algorithm
 
-// Words to match
-var words = ["dell", "ledl", "abc", "cba"];
-
-// The output object
-var anagrams = {};
-
-for (var i in words) {
-    var word = words[i];
-
-    // sort the word like you've already described
-    var sorted = sortWord(word);
-
-    // If the key already exists, we just push
-    // the new word on the the array
-    if (anagrams[sorted] != null) {
-        anagrams[sorted].push(word);
-    }
-    // Otherwise we create an array with the word
-    // and insert it into the object
-    else {
-        anagrams[sorted] = [ word ];
-    }
+function swap(chars, i, j) {
+    var tmp = chars[i];
+    chars[i] = chars[j];
+    chars[j] = tmp;
 }
 
-// Output result
-for (var sorted in anagrams) {
-    var words = anagrams[sorted];
-    var sep = ",";
-    var out = "";
-    for (var n in words) {
-        out += sep + words[n];
-        sep = "";
+function getAnagrams(input) {
+    var counter = [],
+        anagrams = [],
+        chars = input.split(''),
+        length = chars.length,
+        i;
+
+    for (i = 0; i < length; i++) {
+        counter[i] = 0;
     }
-    document.writeln(sorted + ": " + out + "<br />");
+
+    anagrams.push(input);
+    i = 0;
+    while (i < length) {
+        if (counter[i] < i) {
+            swap(chars, i % 2 === 1 ? counter[i] : 0, i);
+            counter[i]++;
+            i = 0;
+            anagrams.push(chars.join(''));
+        } else {
+            counter[i] = 0;
+            i++;
+        }
+    }
+
+    return anagrams;
 }
+
+var arr = getAnagrams('car');
+
+var rmDuplicates = (arrArg) => {
+    return arrArg.filter((elem, pos, arr) => {
+        return arr.indexOf(elem) == pos;
+    });
+}
+
+console.log(rmDuplicates(arr));
